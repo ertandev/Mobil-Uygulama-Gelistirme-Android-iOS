@@ -159,8 +159,10 @@ flutter pub get
 # 3. Bağlı cihazları listeleyin
 flutter devices
 
-# 4. Android Emulator üzerinde çalıştırmak için:
-flutter run -d android
+# 4. Android Emulator üzerinde çalıştırmak için (Açık emülatörün ID'si ile):
+flutter run -d emulator-5554
+# veya genel emülatör hedefiyle:
+flutter run -d emulator
 
 # 5. iOS Simulator üzerinde çalıştırmak için:
 flutter run -d ios
