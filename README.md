@@ -193,8 +193,8 @@ mini_katalog_uygulamasi/
 
 ```bash
 # 1. Projeyi klonlayın ve dizine geçiş yapın
-git clone https://github.com/ertandev/Mobil-Uygulama-Geli-tirme-Android-iOS.git
-cd Mobil-Uygulama-Geli-tirme-Android-iOS
+git clone https://github.com/ertandev/Mobil-Uygulama-Gelistirme-Android-iOS.git
+cd Mobil-Uygulama-Gelistirme-Android-iOS
 
 # 2. Bağımlılıkları güncelleyin
 flutter pub get
