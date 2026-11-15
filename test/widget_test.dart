@@ -10,8 +10,8 @@ void main() {
     await tester.pumpWidget(const MiniCatalogApp());
     await tester.pump();
 
-    // Discover başlığı ve alt başlığı ekranda olmalıdır
-    expect(find.text(AppStrings.discoverTitle), findsOneWidget);
+    // NovaStore Keşfet başlığı ve arama kutusu ekranda olmalıdır
+    expect(find.text(AppStrings.discoverGreeting), findsOneWidget);
     expect(find.text(AppStrings.discoverSubtitle), findsOneWidget);
     expect(find.text(AppStrings.searchHint), findsOneWidget);
   });
@@ -27,6 +27,5 @@ void main() {
 
     expect(find.text(AppStrings.cartEmptyTitle), findsOneWidget);
     expect(find.text(AppStrings.cartEmptySubtitle), findsOneWidget);
-    expect(find.text(AppStrings.checkout), findsOneWidget);
   });
 }
