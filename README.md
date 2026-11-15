@@ -1,5 +1,10 @@
 # <img src="https://api.iconify.design/lucide/monitor.svg?color=%236366f1" width="28" height="28" align="center" /> NOVAGEAR STUDIO — Next-Gen Battlestation & Creator Desk Setup Catalog
 
+<p align="center">
+  <img src="./screenshots/app_icon_preview.jpg" width="128" height="128" style="border-radius: 28px; box-shadow: 0 10px 25px rgba(0,0,0,0.3);" alt="NovaGear Studio App Icon" /><br>
+  <sub><b>NovaGear Studio Resmi Mobil Uygulama İkonu (Android & iOS)</b></sub>
+</p>
+
 <p align="left">
   <img src="https://img.shields.io/badge/Flutter-v3.50.0-02569B.svg?style=flat-square&logo=flutter&logoColor=white" alt="Flutter" />
   <img src="https://img.shields.io/badge/Dart-v3.14.0-0175C2.svg?style=flat-square&logo=dart&logoColor=white" alt="Dart" />
