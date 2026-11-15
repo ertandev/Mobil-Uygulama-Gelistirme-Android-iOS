@@ -1,6 +1,4 @@
-/// Zenginleştirilmiş Ürün Veri Modeli.
-/// Temel JSON isterlerini karşılarken dinamik rozetler, puanlama,
-/// eski fiyat karşılaştırması ve renk varyantlarıyla özgün bir e-ticaret deneyimi sunar.
+/// Zenginleştirilmiş ve Özgün Ürün Veri Modeli.
 class Product {
   final int id;
   final String name;
@@ -10,6 +8,7 @@ class Product {
   final String? oldPrice;
   final String currency;
   final String image;
+  final String category;
   final Map<String, String> specs;
   final double rating;
   final int reviewCount;
@@ -26,15 +25,16 @@ class Product {
     this.oldPrice,
     required this.currency,
     required this.image,
+    this.category = 'Genel',
     required this.specs,
     this.rating = 4.8,
     this.reviewCount = 96,
     this.badge,
-    this.colorNames = const ['Uzay Grisi', 'Gümüş', 'Gece Yarısı'],
-    this.colorHexes = const [0xFF1F2937, 0xFFE2E8F0, 0xFF0F172A],
+    this.colorNames = const ['Obsidyen Siyah', 'Gümüş Titanyum', 'Derin İndigo'],
+    this.colorHexes = const [0xFF0F172A, 0xFF94A3B8, 0xFF4338CA],
   });
 
-  /// Fiyat metninden sayısal değeri elde eder ($999 -> 999.0).
+  /// Fiyat metninden sayısal değeri elde eder ($189 -> 189.0).
   double get numericPrice {
     final clean = price.replaceAll(RegExp(r'[^0-9.]'), '');
     return double.tryParse(clean) ?? 0.0;
@@ -55,6 +55,7 @@ class Product {
 
   /// Görsel URL'sinden yerel asset yolunu türetir.
   String get assetPath {
+    if (image.startsWith('assets/')) return image;
     final filename = image.split('/').last;
     return 'assets/images/$filename';
   }
@@ -70,50 +71,22 @@ class Product {
       });
     }
 
-    final id = json['id'] is int
-        ? json['id'] as int
-        : int.tryParse(json['id'].toString()) ?? 0;
-
-    // Ürüne göre dinamik özgün rozetler ve puanlar
-    String? badge;
-    double rating = 4.8;
-    int reviewCount = 94;
-    String? oldPrice;
-
-    if (id == 1 || id == 6) {
-      badge = 'Öne Çıkan';
-      rating = 4.9;
-      reviewCount = 284;
-      oldPrice = '\$1,099';
-    } else if (id == 17 || id == 18) {
-      badge = 'Çok Satan';
-      rating = 4.9;
-      reviewCount = 412;
-      oldPrice = '\$279';
-    } else if (id == 20) {
-      badge = 'Fırsat';
-      rating = 4.7;
-      reviewCount = 156;
-      oldPrice = '\$119';
-    } else if (id % 3 == 0) {
-      badge = 'Yeni';
-      rating = 4.8;
-      reviewCount = 88;
-    }
-
     return Product(
-      id: id,
+      id: json['id'] is int
+          ? json['id'] as int
+          : int.tryParse(json['id'].toString()) ?? 0,
       name: json['name'] as String? ?? '',
       tagline: json['tagline'] as String? ?? '',
       description: json['description'] as String? ?? '',
       price: json['price'] as String? ?? '\$0',
-      oldPrice: json['oldPrice'] as String? ?? oldPrice,
+      oldPrice: json['oldPrice'] as String?,
       currency: json['currency'] as String? ?? 'USD',
       image: json['image'] as String? ?? '',
+      category: json['category'] as String? ?? 'Genel',
       specs: parsedSpecs,
-      rating: (json['rating'] as num?)?.toDouble() ?? rating,
-      reviewCount: json['reviewCount'] as int? ?? reviewCount,
-      badge: json['badge'] as String? ?? badge,
+      rating: (json['rating'] as num?)?.toDouble() ?? 4.8,
+      reviewCount: json['reviewCount'] as int? ?? 100,
+      badge: json['badge'] as String?,
     );
   }
 
@@ -128,6 +101,7 @@ class Product {
       'oldPrice': oldPrice,
       'currency': currency,
       'image': image,
+      'category': category,
       'specs': specs,
       'rating': rating,
       'reviewCount': reviewCount,

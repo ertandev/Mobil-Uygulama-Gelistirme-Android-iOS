@@ -5,11 +5,10 @@ import 'package:flutter/services.dart';
 import '../models/product.dart';
 
 /// Ürün veri servisi.
-/// Yerel JSON dosyasından (assets/data/products.json) veya
-/// eğitim API'sinden (https://wantapi.com/products.php) veri yükler.
+/// Yerel JSON dosyasından (assets/data/products.json) veya online API'den veri yükler.
 /// Ekstra paket kullanılmadan sadece Dart & Flutter SDK kütüphaneleriyle çalışır.
 class ProductService {
-  static const String _apiEndpoint = 'https://wantapi.com/products.php';
+  static const String _apiEndpoint = 'https://api.novagear.studio/products.json';
   static const String _localAssetPath = 'assets/data/products.json';
 
   List<Product>? _cachedProducts;

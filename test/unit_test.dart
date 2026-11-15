@@ -7,49 +7,58 @@ void main() {
     test('Product.fromJson parses valid JSON and assigns dynamic badges correctly', () {
       final json = {
         'id': 1,
-        'name': 'iPhone 15 Pro',
-        'tagline': 'Titanium. So strong. So light. So Pro.',
-        'description': 'Aerospace-grade titanium design.',
-        'price': '\$999',
+        'name': 'NovaBlade G75 Pro Mekanik Klavye',
+        'tagline': 'Gasket-Mount & Hot-Swap Akustik Canavarı',
+        'description': 'CNC işlenmiş yekpare alüminyum gövde ve Poron yalıtımı.',
+        'price': r'$189',
+        'oldPrice': r'$219',
         'currency': 'USD',
-        'image': 'https://wantapi.com/assets/images/iphone.png',
+        'image': 'assets/images/keyboard.jpg',
+        'category': 'Klavyeler',
+        'badge': 'Çok Satan',
+        'rating': 4.9,
+        'reviewCount': 342,
         'specs': {
-          'chip': 'A17 Pro',
-          'material': 'Titanium',
+          'switch': 'Gateron Oil King',
+          'gövde': 'CNC Alüminyum',
         },
       };
 
       final product = Product.fromJson(json);
 
       expect(product.id, 1);
-      expect(product.name, 'iPhone 15 Pro');
-      expect(product.price, '\$999');
-      expect(product.numericPrice, 999.0);
-      expect(product.assetPath, 'assets/images/iphone.png');
-      expect(product.specs['chip'], 'A17 Pro');
-      expect(product.rating, greaterThanOrEqualTo(4.0));
-      expect(product.badge, isNotNull);
+      expect(product.name, 'NovaBlade G75 Pro Mekanik Klavye');
+      expect(product.price, r'$189');
+      expect(product.numericPrice, 189.0);
+      expect(product.numericOldPrice, 219.0);
+      expect(product.discountPercent, greaterThan(0));
+      expect(product.assetPath, 'assets/images/keyboard.jpg');
+      expect(product.category, 'Klavyeler');
+      expect(product.specs['switch'], 'Gateron Oil King');
+      expect(product.rating, 4.9);
+      expect(product.badge, 'Çok Satan');
     });
 
     test('Product.toJson converts back correctly', () {
       const product = Product(
-        id: 20,
-        name: 'HomePod Mini',
-        tagline: 'Color-pop.',
-        description: '360-degree audio.',
-        price: '\$99',
-        oldPrice: '\$119',
+        id: 2,
+        name: 'NovaGlide Karbon Mouse',
+        tagline: '39 Gram Magnezyum Alaşım',
+        description: 'PAW3395 26K sensör.',
+        price: r'$119',
+        oldPrice: r'$139',
         currency: 'USD',
-        image: 'https://wantapi.com/assets/images/homepod_mini.png',
-        specs: {'size': '3.3 inches'},
+        image: 'assets/images/mouse.jpg',
+        category: 'Fareler',
+        specs: {'sensör': 'PAW3395'},
       );
 
       final json = product.toJson();
 
-      expect(json['id'], 20);
-      expect(json['name'], 'HomePod Mini');
-      expect(product.numericPrice, 99.0);
-      expect(product.numericOldPrice, 119.0);
+      expect(json['id'], 2);
+      expect(json['name'], 'NovaGlide Karbon Mouse');
+      expect(product.numericPrice, 119.0);
+      expect(product.numericOldPrice, 139.0);
       expect(product.discountPercent, greaterThan(0));
     });
   });
@@ -58,24 +67,26 @@ void main() {
     late CartManager cart;
 
     const testProduct1 = Product(
-      id: 17,
-      name: 'AirPods Pro',
-      tagline: 'Adaptive Audio',
+      id: 1,
+      name: 'NovaBlade G75 Pro Mekanik Klavye',
+      tagline: 'Gasket-Mount & Hot-Swap',
       description: 'Test description',
-      price: '\$249',
+      price: r'$200',
       currency: 'USD',
-      image: 'https://wantapi.com/assets/images/airpods.png',
+      image: 'assets/images/keyboard.jpg',
+      category: 'Klavyeler',
       specs: {},
     );
 
     const testProduct2 = Product(
-      id: 20,
-      name: 'HomePod Mini',
-      tagline: 'Color-pop',
+      id: 2,
+      name: 'NovaGlide Karbon Mouse',
+      tagline: '39 Gram Magnezyum',
       description: 'Test description',
-      price: '\$99',
+      price: r'$100',
       currency: 'USD',
-      image: 'https://wantapi.com/assets/images/homepod_mini.png',
+      image: 'assets/images/mouse.jpg',
+      category: 'Fareler',
       specs: {},
     );
 
@@ -96,21 +107,20 @@ void main() {
       expect(cart.isEmpty, isFalse);
       expect(cart.itemCount, 2);
       expect(cart.totalQuantity, 2);
-      expect(cart.subtotalAmount, 348.0);
-
+      expect(cart.subtotalAmount, 300.0);
       // 200$ üzeri kargo ücretsizdir
       expect(cart.shippingFee, 0.0);
-      expect(cart.totalAmount, 348.0);
+      expect(cart.totalAmount, 300.0);
     });
 
     test('Applying promo code NOVA10 discounts subtotal by 10%', () {
-      cart.addToCart(testProduct1); // 249$
+      cart.addToCart(testProduct1); // 200$
       final applied = cart.applyPromo('NOVA10');
 
       expect(applied, isTrue);
       expect(cart.appliedPromoCode, 'NOVA10');
-      expect(cart.discountAmount, closeTo(24.9, 0.01));
-      expect(cart.totalAmount, closeTo(224.1, 0.01));
+      expect(cart.discountAmount, closeTo(20.0, 0.01));
+      expect(cart.totalAmount, closeTo(180.0, 0.01));
     });
 
     test('Favorite management toggles correctly', () {

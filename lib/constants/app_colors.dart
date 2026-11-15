@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-/// NovaStore / Lumina modern özgün renk paleti.
-/// Apple & Nordic minimalist tasarım dilinin zenginleştirilmiş versiyonu.
+/// NovaGear Studio modern özgün renk paleti.
+/// Creator & Battlestation çalışma alanı tasarım dili.
 class AppColors {
   const AppColors._();
 

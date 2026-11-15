@@ -30,11 +30,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Map<String, dynamic>> _categories = [
     {'name': 'Tümü', 'icon': Icons.auto_awesome_rounded},
-    {'name': 'iPhone', 'icon': Icons.phone_iphone_rounded},
-    {'name': 'MacBook', 'icon': Icons.laptop_mac_rounded},
-    {'name': 'iPad', 'icon': Icons.tablet_mac_rounded},
-    {'name': 'Watch', 'icon': Icons.watch_rounded},
-    {'name': 'Audio', 'icon': Icons.headphones_rounded},
+    {'name': 'Klavyeler', 'icon': Icons.keyboard_rounded},
+    {'name': 'Fareler', 'icon': Icons.mouse_rounded},
+    {'name': 'Kulaklıklar', 'icon': Icons.headphones_rounded},
+    {'name': 'Monitörler', 'icon': Icons.desktop_windows_rounded},
+    {'name': 'Yayıncı & Masa', 'icon': Icons.mic_rounded},
     {'name': 'Favorilerim', 'icon': Icons.favorite_rounded},
   ];
 
@@ -92,12 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (_selectedCategory == 'Favorilerim') {
         matchesCategory = cart.isFavorite(product);
       } else if (_selectedCategory != 'Tümü') {
-        matchesCategory = product.name
-                .toLowerCase()
-                .contains(_selectedCategory.toLowerCase()) ||
-            product.tagline
-                .toLowerCase()
-                .contains(_selectedCategory.toLowerCase());
+        matchesCategory = product.category == _selectedCategory;
       }
 
       return matchesQuery && matchesCategory;

@@ -2,35 +2,35 @@
 class AppStrings {
   const AppStrings._();
 
-  static const String appTitle = 'NovaStore';
-  static const String brandTagline = 'Next-Gen Mobile Catalog';
-  static const String discoverGreeting = 'Keşfet & İncele 👋';
+  static const String appTitle = 'NovaGear';
+  static const String brandTagline = 'Battlestation & Creator Gear';
+  static const String discoverGreeting = 'NovaGear Studio ⚡';
   static const String discoverSubtitle =
-      'En yeni nesil akıllı cihazlar ve aksesuarlar';
-  static const String searchHint = 'Ürün, model veya özellik ara...';
+      'Espor oyuncuları ve üreticiler için profesyonel donanımlar';
+  static const String searchHint = 'Klavye, mouse, monitör veya ses ekipmanı ara...';
   static const String allCategory = 'Tümü';
 
-  static const String description = 'Ürün Açıklaması';
-  static const String specifications = 'Teknik Detaylar';
-  static const String colorVariants = 'Renk Seçenekleri';
-  static const String reviews = 'Müşteri Değerlendirmeleri';
+  static const String description = 'Ürün ve Malzeme Detayları';
+  static const String specifications = 'Donanım Özellikleri';
+  static const String colorVariants = 'Gövde ve Renk Seçenekleri';
+  static const String reviews = 'Kullanıcı İncelemeleri';
   static const String addToCart = 'Sepete Ekle';
   static const String buyNow = 'Hemen Al';
 
   static const String cartTitle = 'Sepetim';
-  static const String cartEmptyTitle = 'Sepetiniz henüz boş';
+  static const String cartEmptyTitle = 'Sepetinizde ekipman yok';
   static const String cartEmptySubtitle =
-      'Özel indirimli cihazları keşfetmek için kataloğa göz atın.';
-  static const String checkout = 'Siparişi Tamamla';
-  static const String orderSuccess = 'Siparişiniz Hazırlanıyor! 🎉';
+      'Masa kurulumunuzu güçlendirmek için NovaGear kataloğuna göz atın.';
+  static const String checkout = 'Siparişi Onayla & Satın Al';
+  static const String orderSuccess = 'Kurulum Ekipmanlarınız Yolda! 🚀';
   static const String orderSuccessDesc =
-      'Siparişiniz başarıyla alındı. Kargo takip kodunuz SMS olarak iletilecektir.';
+      'Siparişiniz başarıyla alındı. Özel korumalı kutusunda kargoya teslim ediliyor.';
 
   static const String subtotal = 'Ara Toplam';
   static const String discount = 'Kupon İndirimi';
   static const String shipping = 'Kargo';
   static const String freeShipping = 'ÜCRETSİZ';
-  static const String total = 'Toplam Tutar';
+  static const String total = 'Genel Toplam';
   static const String promoApply = 'Uygula';
-  static const String promoHint = 'İndirim Kuponu (örn: NOVA10)';
+  static const String promoHint = 'İndirim Kodu (örn: NOVA10)';
 }

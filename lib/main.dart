@@ -55,32 +55,35 @@ class MiniCatalogApp extends StatelessWidget {
           if (cart.isEmpty) {
             cart.addToCart(const Product(
               id: 1,
-              name: 'iPhone 15 Pro',
-              tagline: 'Titanyum Pro',
-              description: 'A17 Pro çipli amiral gemisi',
-              price: '\$999',
+              name: 'NovaBlade G75 Pro Mekanik Klavye',
+              tagline: 'Gasket-Mount & Hot-Swap',
+              description: 'CNC Alüminyum gövde, Gateron Oil King lineer anahtarlar',
+              price: '\$189',
               currency: 'USD',
-              image: 'https://wantapi.com/assets/images/iphone.png',
+              image: 'assets/images/keyboard.jpg',
+              category: 'Klavyeler',
               specs: {},
             ));
             cart.addToCart(const Product(
-              id: 17,
-              name: 'AirPods Pro (2. Nesil)',
-              tagline: 'Aktif Gürültü Engelleme',
-              description: 'Kusursuz ses deneyimi',
+              id: 2,
+              name: 'NovaGlide Karbon Mouse',
+              tagline: '39 Gram Magnezyum Alaşım',
+              description: 'PAW3395 26K sensör ve 8000Hz polling',
+              price: '\$119',
+              currency: 'USD',
+              image: 'assets/images/mouse.jpg',
+              category: 'Fareler',
+              specs: {},
+            ));
+            cart.addToCart(const Product(
+              id: 3,
+              name: 'NovaAcoustics Studio Pro',
+              tagline: 'Planar Manyetik & Hibrit ANC',
+              description: '50mm Planar sürücüler ve kayıpsız ses iletimi',
               price: '\$249',
               currency: 'USD',
-              image: 'https://wantapi.com/assets/images/airpods.png',
-              specs: {},
-            ));
-            cart.addToCart(const Product(
-              id: 20,
-              name: 'HomePod Mini',
-              tagline: '360° Akıllı Hoparlör',
-              description: 'Odayı dolduran net akustik',
-              price: '\$99',
-              currency: 'USD',
-              image: 'https://wantapi.com/assets/images/homepod_mini.png',
+              image: 'assets/images/headphones.jpg',
+              category: 'Kulaklıklar',
               specs: {},
             ));
             cart.applyPromo('NOVA10');
@@ -93,22 +96,24 @@ class MiniCatalogApp extends StatelessWidget {
           final product = settings.arguments as Product? ??
               const Product(
                 id: 1,
-                name: 'iPhone 15 Pro',
-                tagline: 'Titanyum. Çok güçlü. Çok hafif. Çok Pro.',
+                name: 'NovaBlade G75 Pro Mekanik Klavye',
+                tagline: 'Gasket-Mount & Hot-Swap Akustik Canavarı',
                 description:
-                    'iPhone 15 Pro, havacılık ve uzay sınıfı titanyum tasarımıyla şimdiye kadarki en hafif ve en dayanıklı Pro modelidir. A17 Pro çip ile üstün mobil oyun performansı ve profesyonel 48 MP kamera sistemi sunar.',
-                price: '\$999',
-                oldPrice: '\$1,099',
+                    'CNC işlenmiş yekpare alüminyum gövde, önceden yağlanmış Gateron Oil King lineer mekanik anahtarlar ve çok katmanlı Poron ses yalıtım köpüğü ile benzersiz bir thock yazım hissiyatı sunar. 4000 mAh bataryası ile kablosuz 2.4Ghz ve Bluetooth bağlantıda haftalarca kesintisiz kullanım sağlar.',
+                price: '\$189',
+                oldPrice: '\$219',
                 currency: 'USD',
-                image: 'https://wantapi.com/assets/images/iphone.png',
+                image: 'assets/images/keyboard.jpg',
+                category: 'Klavyeler',
                 specs: {
-                  'chip': 'A17 Pro',
-                  'material': 'Titanyum',
-                  'camera': '48MP Pro',
+                  'switch': 'Gateron Oil King',
+                  'bağlantı': '2.4G / BT / Type-C',
+                  'gövde': 'CNC Alüminyum',
+                  'batarya': '4000 mAh Uzun Ömür',
                 },
-                badge: 'Öne Çıkan',
+                badge: 'Çok Satan',
                 rating: 4.9,
-                reviewCount: 284,
+                reviewCount: 342,
               );
           return MaterialPageRoute(
             builder: (context) => ProductDetailScreen(product: product),
