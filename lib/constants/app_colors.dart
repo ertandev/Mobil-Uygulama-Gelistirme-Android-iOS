@@ -1,26 +1,39 @@
 import 'package:flutter/material.dart';
 
-/// Uygulama genelinde kullanılan renk paleti.
+/// NovaStore / Lumina modern özgün renk paleti.
+/// Apple & Nordic minimalist tasarım dilinin zenginleştirilmiş versiyonu.
 class AppColors {
-  // Özel kurucu: Nesne üretilmesini engeller
   const AppColors._();
 
-  static const Color primary = Color(0xFF1D1D1F);
-  static const Color secondary = Color(0xFF86868B);
-  static const Color background = Color(0xFFF8F9FA);
+  // Ana Marka Renkleri
+  static const Color primary = Color(0xFF0F172A); // Derin Slate / Gece Mavisi
+  static const Color primaryLight = Color(0xFF1E293B);
+  static const Color accent = Color(0xFF6366F1); // Elektrik İndigo
+  static const Color accentGradientStart = Color(0xFF4F46E5);
+  static const Color accentGradientEnd = Color(0xFF06B6D4); // Neon Cyan
+
+  // Yüzey ve Zemin
+  static const Color background = Color(0xFFF8FAFC);
   static const Color cardBackground = Color(0xFFFFFFFF);
-  static const Color surface = Color(0xFFF5F5F7);
-  static const Color border = Color(0xFFE5E5EA);
+  static const Color surface = Color(0xFFF1F5F9);
+  static const Color border = Color(0xFFE2E8F0);
+  static const Color divider = Color(0xFFEEF2F6);
 
-  static const Color accent = Color(0xFF0071E3);
-  static const Color textPrimary = Color(0xFF1D1D1F);
-  static const Color textSecondary = Color(0xFF6E6E73);
-  static const Color textLight = Color(0xFF8E8E93);
+  // Tipografi
+  static const Color textPrimary = Color(0xFF0F172A);
+  static const Color textSecondary = Color(0xFF64748B);
+  static const Color secondary = Color(0xFF64748B);
+  static const Color textMuted = Color(0xFF94A3B8);
+  static const Color textLight = Color(0xFFCBD5E1);
 
-  static const Color success = Color(0xFF34C759);
-  static const Color error = Color(0xFFFF3B30);
-  static const Color warning = Color(0xFFFF9500);
+  // Durum Renkleri
+  static const Color success = Color(0xFF10B981); // Zümrüt Yeşili
+  static const Color warning = Color(0xFFF59E0B); // Amber
+  static const Color error = Color(0xFFEF4444); // Kırmızı
+  static const Color favorite = Color(0xFFF43F5E); // Gül Pembesi
 
-  static const Color chipBackground = Color(0xFFEFEFF4);
-  static const Color chipSelected = Color(0xFF1D1D1F);
+  // Etiket ve Rozetler
+  static const Color badgeNew = Color(0xFF38BDF8);
+  static const Color badgeHot = Color(0xFFF97316);
+  static const Color chipBackground = Color(0xFFF1F5F9);
 }

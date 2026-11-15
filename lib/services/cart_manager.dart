@@ -2,34 +2,44 @@ import 'package:flutter/foundation.dart';
 import '../models/cart_item.dart';
 import '../models/product.dart';
 
-/// Sepet durum yönetimi (State Management).
-/// Ekstra paket (Provider, Riverpod, Bloc vs.) kullanılmadan
-/// Flutter'ın yerleşik [ChangeNotifier] sınıfı ile uygulanmıştır.
+/// Zenginleştirilmiş Sepet ve Favori Durum Yöneticisi (State Management).
+/// Harici paket kullanılmaksızın yerleşik [ChangeNotifier] ile reaktif çalışır.
 class CartManager extends ChangeNotifier {
-  // Singleton deseni: Tüm uygulama boyunca tek sepet örneği
   static final CartManager _instance = CartManager._internal();
   factory CartManager() => _instance;
   CartManager._internal();
 
   final List<CartItem> _items = [];
+  final Set<int> _favoriteIds = {};
+  String? _appliedPromoCode;
+  double _promoDiscountRate = 0.0;
 
-  /// Sepetteki ürün kalemlerinin salt-okunur listesi
+  // Salt okunur koleksiyonlar
   List<CartItem> get items => List.unmodifiable(_items);
+  Set<int> get favoriteIds => Set.unmodifiable(_favoriteIds);
+  String? get appliedPromoCode => _appliedPromoCode;
 
-  /// Sepetteki toplam tekil ürün adedi
+  // Sepet Metrikleri
   int get itemCount => _items.length;
-
-  /// Sepetteki toplam ürün miktarı (adet toplamı)
   int get totalQuantity =>
       _items.fold<int>(0, (sum, item) => sum + item.quantity);
 
-  /// Sepet toplam tutarı ($)
-  double get totalAmount =>
+  /// İndirimsiz ham toplam
+  double get subtotalAmount =>
       _items.fold<double>(0.0, (sum, item) => sum + item.totalPrice);
 
-  /// Biçimlendirilmiş toplam tutar metni ($1,299)
-  String get formattedTotal {
-    final amount = totalAmount;
+  /// Uygulanan promosyon indirim tutarı
+  double get discountAmount => subtotalAmount * _promoDiscountRate;
+
+  /// Kargo ücreti (200$ üzeri ÜCRETSİZ)
+  double get shippingFee =>
+      (subtotalAmount >= 200 || subtotalAmount == 0) ? 0.0 : 15.0;
+
+  /// Nihai ödenecek genel toplam
+  double get totalAmount => (subtotalAmount - discountAmount + shippingFee);
+
+  /// Biçimlendirilmiş toplam tutar metni
+  String formatCurrency(double amount) {
     if (amount == amount.truncateToDouble()) {
       return '\$${amount.toInt().toString().replaceAllMapped(
             RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
@@ -39,21 +49,23 @@ class CartManager extends ChangeNotifier {
     return '\$${amount.toStringAsFixed(2)}';
   }
 
-  /// Sepet boş mu kontrolü
+  String get formattedSubtotal => formatCurrency(subtotalAmount);
+  String get formattedDiscount => formatCurrency(discountAmount);
+  String get formattedTotal => formatCurrency(totalAmount);
+
   bool get isEmpty => _items.isEmpty;
 
-  /// Sepette belirli bir ürün var mı kontrolü
+  // --- SEPET İŞLEMLERİ ---
+
   bool containsProduct(Product product) {
     return _items.any((item) => item.product.id == product.id);
   }
 
-  /// Sepetteki bir ürünün miktarını verir
   int getQuantity(Product product) {
     final index = _items.indexWhere((item) => item.product.id == product.id);
     return index >= 0 ? _items[index].quantity : 0;
   }
 
-  /// Ürünü sepete ekler (varsa adedini 1 artırır)
   void addToCart(Product product) {
     final index = _items.indexWhere((item) => item.product.id == product.id);
     if (index >= 0) {
@@ -64,7 +76,6 @@ class CartManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Ürünün miktarını bir azaltır; 0 olursa sepetten çıkarır
   void decreaseQuantity(Product product) {
     final index = _items.indexWhere((item) => item.product.id == product.id);
     if (index >= 0) {
@@ -77,15 +88,52 @@ class CartManager extends ChangeNotifier {
     }
   }
 
-  /// Ürünü tamamen sepetten çıkarır
   void removeProduct(Product product) {
     _items.removeWhere((item) => item.product.id == product.id);
     notifyListeners();
   }
 
-  /// Sepeti sıfırlar / temizler
   void clear() {
     _items.clear();
+    _appliedPromoCode = null;
+    _promoDiscountRate = 0.0;
+    notifyListeners();
+  }
+
+  // --- KUPON & PROMOSYON ---
+
+  bool applyPromo(String code) {
+    final clean = code.trim().toUpperCase();
+    if (clean == 'NOVA10' || clean == 'FLUTTER10') {
+      _appliedPromoCode = clean;
+      _promoDiscountRate = 0.10; // %10 indirim
+      notifyListeners();
+      return true;
+    } else if (clean == 'SUPER20') {
+      _appliedPromoCode = clean;
+      _promoDiscountRate = 0.20; // %20 indirim
+      notifyListeners();
+      return true;
+    }
+    return false;
+  }
+
+  void removePromo() {
+    _appliedPromoCode = null;
+    _promoDiscountRate = 0.0;
+    notifyListeners();
+  }
+
+  // --- FAVORİ YÖNETİMİ ---
+
+  bool isFavorite(Product product) => _favoriteIds.contains(product.id);
+
+  void toggleFavorite(Product product) {
+    if (_favoriteIds.contains(product.id)) {
+      _favoriteIds.remove(product.id);
+    } else {
+      _favoriteIds.add(product.id);
+    }
     notifyListeners();
   }
 }

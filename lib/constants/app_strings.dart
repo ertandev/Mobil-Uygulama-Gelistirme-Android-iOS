@@ -2,29 +2,35 @@
 class AppStrings {
   const AppStrings._();
 
-  static const String appTitle = 'Mini Katalog';
-  static const String discoverTitle = 'Discover';
-  static const String discoverSubtitle = 'Find your perfect device.';
-  static const String searchHint = 'Search products';
-  static const String allCategory = 'All';
+  static const String appTitle = 'NovaStore';
+  static const String brandTagline = 'Next-Gen Mobile Catalog';
+  static const String discoverGreeting = 'Keşfet & İncele 👋';
+  static const String discoverSubtitle =
+      'En yeni nesil akıllı cihazlar ve aksesuarlar';
+  static const String searchHint = 'Ürün, model veya özellik ara...';
+  static const String allCategory = 'Tümü';
 
-  static const String description = 'Description';
-  static const String specifications = 'Specifications';
-  static const String addToCart = 'Add to Cart';
-  static const String addedToCart = 'ürün sepete eklendi!';
+  static const String description = 'Ürün Açıklaması';
+  static const String specifications = 'Teknik Detaylar';
+  static const String colorVariants = 'Renk Seçenekleri';
+  static const String reviews = 'Müşteri Değerlendirmeleri';
+  static const String addToCart = 'Sepete Ekle';
+  static const String buyNow = 'Hemen Al';
 
-  static const String cartTitle = 'Cart';
-  static const String cartEmptyTitle = 'Your cart is empty';
-  static const String cartEmptySubtitle = 'Add items to start shopping';
-  static const String checkout = 'Checkout';
-  static const String checkoutSuccess = 'Siparişiniz başarıyla alındı!';
-  static const String checkoutSuccessDesc =
-      'Teşekkür ederiz. Siparişiniz hazırlanıyor ve en kısa sürede adresinize teslim edilecek.';
-  static const String total = 'Total';
-  static const String subtotal = 'Subtotal';
-  static const String shipping = 'Shipping';
-  static const String free = 'Free';
-  static const String close = 'Kapat';
-  static const String back = 'Back';
-  static const String itemsCount = 'ürün';
+  static const String cartTitle = 'Sepetim';
+  static const String cartEmptyTitle = 'Sepetiniz henüz boş';
+  static const String cartEmptySubtitle =
+      'Özel indirimli cihazları keşfetmek için kataloğa göz atın.';
+  static const String checkout = 'Siparişi Tamamla';
+  static const String orderSuccess = 'Siparişiniz Hazırlanıyor! 🎉';
+  static const String orderSuccessDesc =
+      'Siparişiniz başarıyla alındı. Kargo takip kodunuz SMS olarak iletilecektir.';
+
+  static const String subtotal = 'Ara Toplam';
+  static const String discount = 'Kupon İndirimi';
+  static const String shipping = 'Kargo';
+  static const String freeShipping = 'ÜCRETSİZ';
+  static const String total = 'Toplam Tutar';
+  static const String promoApply = 'Uygula';
+  static const String promoHint = 'İndirim Kuponu (örn: NOVA10)';
 }
