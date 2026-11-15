@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
+import '../constants/app_routes.dart';
 import '../constants/app_strings.dart';
 import '../models/product.dart';
 import '../services/cart_manager.dart';
@@ -7,10 +8,10 @@ import '../widgets/cart_badge_button.dart';
 import '../widgets/product_image_view.dart';
 import '../widgets/spec_chip.dart';
 
-/// Ürün Detay Sayfası (Screen 2).
-/// Gün 3'teki Sayfalar arası veri taşıma (Route Arguments)
-/// ve Gün 5'teki GridView'den detay sayfasına geçişi uygular.
-class ProductDetailScreen extends StatelessWidget {
+/// Zenginleştirilmiş ve Özgün Ürün Detay Sayfası.
+/// Renk varyantı seçimi, garanti rozetleri, kullanıcı puanı ve
+/// dinamik fiyat barıyla benzersiz bir deneyim sunar.
+class ProductDetailScreen extends StatefulWidget {
   final Product product;
 
   const ProductDetailScreen({
@@ -19,7 +20,23 @@ class ProductDetailScreen extends StatelessWidget {
   });
 
   @override
+  State<ProductDetailScreen> createState() => _ProductDetailScreenState();
+}
+
+class _ProductDetailScreenState extends State<ProductDetailScreen> {
+  late int _selectedColorIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedColorIndex = 0;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final cart = CartManager();
+    final product = widget.product;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -35,7 +52,7 @@ class ProductDetailScreen extends StatelessWidget {
             color: AppColors.textPrimary,
           ),
           label: const Text(
-            AppStrings.back,
+            'Geri',
             style: TextStyle(
               color: AppColors.textPrimary,
               fontWeight: FontWeight.bold,
@@ -46,14 +63,27 @@ class ProductDetailScreen extends StatelessWidget {
             padding: const EdgeInsets.only(left: 12),
           ),
         ),
-        actions: const [
-          CartBadgeButton(),
-          SizedBox(width: 8),
+        actions: [
+          AnimatedBuilder(
+            animation: cart,
+            builder: (context, _) {
+              final isFav = cart.isFavorite(product);
+              return IconButton(
+                icon: Icon(
+                  isFav ? Icons.favorite : Icons.favorite_border,
+                  color: isFav ? AppColors.favorite : AppColors.textPrimary,
+                ),
+                onPressed: () => cart.toggleFavorite(product),
+                tooltip: 'Favorilere Ekle',
+              );
+            },
+          ),
+          const CartBadgeButton(),
+          const SizedBox(width: 8),
         ],
       ),
       body: Column(
         children: [
-          // Kaydırılabilir Ürün Ayrıntıları
           Expanded(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -61,13 +91,62 @@ class ProductDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Büyük Ürün Görseli (Hero Animasyonu ile)
+                  // Stok Durumu Rozeti
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: AppColors.success.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: const [
+                            Icon(Icons.circle,
+                                size: 8, color: AppColors.success),
+                            SizedBox(width: 6),
+                            Text(
+                              'Stokta Var • Aynı Gün Kargo',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.success,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Spacer(),
+                      if (product.badge != null)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: AppColors.accent.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            product.badge!,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.accent,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Büyük Ürün Görseli (Hero Animasyonlu)
                   Center(
                     child: Hero(
                       tag: 'product-img-${product.id}',
                       child: Container(
-                        height: 240,
-                        margin: const EdgeInsets.symmetric(vertical: 16),
+                        height: 250,
+                        margin: const EdgeInsets.symmetric(vertical: 8),
                         child: ProductImageView(
                           assetPath: product.assetPath,
                           networkUrl: product.image,
@@ -76,9 +155,74 @@ class ProductDetailScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+
+                  // Renk Seçenekleri Çipleri (Etkileşimli)
+                  Center(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: List.generate(product.colorHexes.length, (index) {
+                          final isSelected = index == _selectedColorIndex;
+                          final colorHex = product.colorHexes[index];
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() => _selectedColorIndex = index);
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 4),
+                              padding: const EdgeInsets.all(2),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: isSelected
+                                      ? AppColors.accent
+                                      : Colors.transparent,
+                                  width: 2,
+                                ),
+                              ),
+                              child: CircleAvatar(
+                                radius: 10,
+                                backgroundColor: Color(colorHex),
+                              ),
+                            ),
+                          );
+                        }),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 16),
 
-                  // Ürün Başlığı
+                  // Puan ve Başlık
+                  Row(
+                    children: [
+                      const Icon(Icons.star_rounded,
+                          size: 18, color: AppColors.warning),
+                      const SizedBox(width: 4),
+                      Text(
+                        '${product.rating} ',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      Text(
+                        '(${product.reviewCount} Değerlendirme)',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+
                   Text(
                     product.name,
                     style: const TextStyle(
@@ -90,7 +234,6 @@ class ProductDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
 
-                  // Tagline
                   Text(
                     product.tagline,
                     style: const TextStyle(
@@ -98,9 +241,24 @@ class ProductDetailScreen extends StatelessWidget {
                       color: AppColors.textSecondary,
                     ),
                   ),
+                  const SizedBox(height: 18),
+
+                  // Güven & Garanti Rozetleri (3'lü Kart Sırası)
+                  Row(
+                    children: [
+                      _buildGuaranteeItem(
+                          Icons.local_shipping_outlined, 'Hızlı Kargo', '1-2 Gün'),
+                      const SizedBox(width: 8),
+                      _buildGuaranteeItem(
+                          Icons.shield_outlined, '2 Yıl Garanti', 'Resmi'),
+                      const SizedBox(width: 8),
+                      _buildGuaranteeItem(
+                          Icons.published_with_changes_rounded, 'İade Hakkı', '14 Gün'),
+                    ],
+                  ),
                   const SizedBox(height: 24),
 
-                  // Description Bölümü
+                  // Ürün Açıklaması
                   const Text(
                     AppStrings.description,
                     style: TextStyle(
@@ -114,13 +272,13 @@ class ProductDetailScreen extends StatelessWidget {
                     product.description,
                     style: TextStyle(
                       fontSize: 13,
-                      height: 1.55,
+                      height: 1.6,
                       color: AppColors.textPrimary.withValues(alpha: 0.8),
                     ),
                   ),
                   const SizedBox(height: 24),
 
-                  // Specifications Bölümü
+                  // Donanım Özellikleri
                   if (product.specs.isNotEmpty) ...[
                     const Text(
                       AppStrings.specifications,
@@ -143,21 +301,23 @@ class ProductDetailScreen extends StatelessWidget {
                     ),
                   ],
 
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 32),
                 ],
               ),
             ),
           ),
 
-          // Alt Sabit Eylem Çubuğu (Fiyat ve Sepete Ekle Butonu)
+          // Alt Sabit Fiyat ve Satın Alma Çubuğu
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
             decoration: BoxDecoration(
               color: AppColors.cardBackground,
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(24)),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 10,
+                  color: const Color(0xFF0F172A).withValues(alpha: 0.06),
+                  blurRadius: 16,
                   offset: const Offset(0, -4),
                 ),
               ],
@@ -166,22 +326,23 @@ class ProductDetailScreen extends StatelessWidget {
               top: false,
               child: Row(
                 children: [
-                  // Fiyat Bilgisi
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text(
-                        'Fiyat',
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: AppColors.textSecondary,
+                      if (product.oldPrice != null)
+                        Text(
+                          product.oldPrice!,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: AppColors.textMuted,
+                            decoration: TextDecoration.lineThrough,
+                          ),
                         ),
-                      ),
                       Text(
                         product.price,
                         style: const TextStyle(
-                          fontSize: 20,
+                          fontSize: 22,
                           fontWeight: FontWeight.w900,
                           color: AppColors.textPrimary,
                         ),
@@ -189,20 +350,18 @@ class ProductDetailScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(width: 24),
-
-                  // Sepete Ekle Butonu
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        CartManager().addToCart(product);
+                        cart.addToCart(product);
                         ScaffoldMessenger.of(context).hideCurrentSnackBar();
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Row(
                               children: [
                                 const Icon(
-                                  Icons.check_circle,
-                                  color: Colors.white,
+                                  Icons.check_circle_rounded,
+                                  color: AppColors.success,
                                   size: 18,
                                 ),
                                 const SizedBox(width: 8),
@@ -216,22 +375,22 @@ class ProductDetailScreen extends StatelessWidget {
                             ),
                             action: SnackBarAction(
                               label: 'SEPETE GİT',
-                              textColor: Colors.amberAccent,
+                              textColor: AppColors.badgeNew,
                               onPressed: () {
-                                Navigator.of(context).pushNamed('/cart');
+                                Navigator.of(context).pushNamed(AppRoutes.cart);
                               },
                             ),
                             duration: const Duration(seconds: 3),
                             behavior: SnackBarBehavior.floating,
                             backgroundColor: AppColors.primary,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                           ),
                         );
                       },
                       icon: const Icon(
-                        Icons.shopping_bag_outlined,
+                        Icons.add_shopping_cart_rounded,
                         size: 18,
                         color: Colors.white,
                       ),
@@ -259,6 +418,35 @@ class ProductDetailScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildGuaranteeItem(IconData icon, String title, String subtitle) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, size: 18, color: AppColors.accent),
+            const SizedBox(height: 4),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              subtitle,
+              style: const TextStyle(fontSize: 9, color: AppColors.textSecondary),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }

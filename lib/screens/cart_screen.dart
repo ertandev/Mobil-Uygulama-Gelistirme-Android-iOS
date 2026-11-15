@@ -6,66 +6,141 @@ import '../services/cart_manager.dart';
 import '../widgets/empty_state_view.dart';
 import '../widgets/product_image_view.dart';
 
-/// Sepet Ekranı (Screens 3 & 4).
-/// Hem dolu sepet durumunu hem de boş sepet durumunu (Empty State) yönetir.
-/// Gün 5'teki "Sepet butonu ile basit state güncelleme (simülasyon)" isterini karşılar.
-class CartScreen extends StatelessWidget {
+/// Zenginleştirilmiş ve Özgün Sepet Ekranı.
+/// Ücretsiz kargo ilerleme çubuğu, promosyon kuponu simülasyonu (NOVA10),
+/// ayrıntılı fatura özeti ve şık sipariş onay diyaloğu içerir.
+class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
 
-  void _showCheckoutDialog(BuildContext context, CartManager cart) {
-    showDialog(
+  @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  final TextEditingController _promoController = TextEditingController();
+
+  @override
+  void dispose() {
+    _promoController.dispose();
+    super.dispose();
+  }
+
+  void _showCheckoutSheet(BuildContext context, CartManager cart) {
+    showModalBottomSheet(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Row(
-          children: const [
-            Icon(Icons.check_circle, color: AppColors.success, size: 28),
-            SizedBox(width: 10),
-            Text('Sipariş Alındı!'),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(AppStrings.checkoutSuccessDesc),
-            const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(10),
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 48,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: AppColors.border,
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Ödenen Tutar:',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    cart.formattedTotal,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w900,
-                      color: AppColors.primary,
-                      fontSize: 16,
+              const SizedBox(height: 20),
+              Container(
+                width: 70,
+                height: 70,
+                decoration: BoxDecoration(
+                  color: AppColors.success.withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.check_circle_rounded,
+                  color: AppColors.success,
+                  size: 40,
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                AppStrings.orderSuccess,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w900,
+                  color: AppColors.textPrimary,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                AppStrings.orderSuccessDesc,
+                style: TextStyle(
+                  fontSize: 13,
+                  color: AppColors.textSecondary,
+                  height: 1.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: const [
+                        Text('Sipariş No:', style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+                        Text('#NV-89241', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Ödenen Toplam:', style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+                        Text(
+                          cart.formattedTotal,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w900,
+                            color: AppColors.accent,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: () {
+                    cart.clear();
+                    Navigator.of(ctx).pop();
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
                     ),
                   ),
-                ],
+                  child: const Text(
+                    'Alışverişe Devam Et',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
               ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              cart.clear();
-              Navigator.of(ctx).pop();
-              Navigator.of(context).pop(); // Ana sayfaya dön
-            },
-            child: const Text('Alışverişe Devam Et'),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -94,7 +169,7 @@ class CartScreen extends StatelessWidget {
                 color: AppColors.textPrimary,
               ),
               label: const Text(
-                AppStrings.cartTitle,
+                'Geri',
                 style: TextStyle(
                   color: AppColors.textPrimary,
                   fontWeight: FontWeight.bold,
@@ -105,41 +180,27 @@ class CartScreen extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 12),
               ),
             ),
+            title: const Text(
+              AppStrings.cartTitle,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w900,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            centerTitle: true,
             actions: [
               if (!isEmpty)
                 TextButton(
                   onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (ctx) => AlertDialog(
-                        title: const Text('Sepeti Boşalt?'),
-                        content: const Text(
-                          'Sepetteki tüm ürünler silinecek. Onaylıyor musunuz?',
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.of(ctx).pop(),
-                            child: const Text('İptal'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              cart.clear();
-                              Navigator.of(ctx).pop();
-                            },
-                            child: const Text(
-                              'Boşalt',
-                              style: TextStyle(color: AppColors.error),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
+                    cart.clear();
                   },
                   child: const Text(
                     'Temizle',
                     style: TextStyle(
-                      color: AppColors.textSecondary,
+                      color: AppColors.error,
                       fontSize: 13,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
@@ -150,18 +211,166 @@ class CartScreen extends StatelessWidget {
               ? EmptyStateView(
                   onStartShopping: () => Navigator.of(context).pop(),
                 )
-              : ListView.separated(
+              : CustomScrollView(
                   physics: const BouncingScrollPhysics(),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  itemCount: cart.items.length,
-                  separatorBuilder: (_, _) => const SizedBox(height: 10),
-                  itemBuilder: (context, index) {
-                    final item = cart.items[index];
-                    return _buildCartItemCard(context, cart, item);
-                  },
+                  slivers: [
+                    // Kargo İlerleme Çubuğu Rozeti
+                    SliverToBoxAdapter(
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.surface,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: AppColors.border),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.local_shipping_rounded,
+                                size: 18,
+                                color: AppColors.accent,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    cart.subtotalAmount >= 200
+                                        ? '🎉 Tebrikler! Ücretsiz Kargo Kazandınız'
+                                        : '200\$ Üzeri ÜCRETSİZ Kargo Fırsatı',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.textPrimary,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    cart.subtotalAmount >= 200
+                                        ? 'Siparişiniz öncelikli kurye ile gönderilecek.'
+                                        : 'Sepetinize ${cart.formatCurrency(200 - cart.subtotalAmount)} daha ekleyin.',
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      color: AppColors.textSecondary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    // Sepet Kalemleri Listesi
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 6),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            final item = cart.items[index];
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: _buildCartItemCard(context, cart, item),
+                            );
+                          },
+                          childCount: cart.items.length,
+                        ),
+                      ),
+                    ),
+
+                    // İndirim Kuponu Girdisi
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: AppColors.surface,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: AppColors.border),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.confirmation_number_outlined,
+                                  size: 20, color: AppColors.accent),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: TextField(
+                                  controller: _promoController,
+                                  decoration: InputDecoration(
+                                    hintText: cart.appliedPromoCode != null
+                                        ? 'Uygulandı: ${cart.appliedPromoCode}'
+                                        : AppStrings.promoHint,
+                                    hintStyle: TextStyle(
+                                      fontSize: 12,
+                                      color: cart.appliedPromoCode != null
+                                          ? AppColors.success
+                                          : AppColors.textMuted,
+                                      fontWeight: cart.appliedPromoCode != null
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                    ),
+                                    border: InputBorder.none,
+                                  ),
+                                ),
+                              ),
+                              if (cart.appliedPromoCode != null)
+                                IconButton(
+                                  icon: const Icon(Icons.close, size: 16),
+                                  onPressed: () {
+                                    cart.removePromo();
+                                    _promoController.clear();
+                                  },
+                                )
+                              else
+                                TextButton(
+                                  onPressed: () {
+                                    final success = cart
+                                        .applyPromo(_promoController.text);
+                                    if (!success) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              'Geçersiz kupon. NOVA10 deneyin!'),
+                                          duration: Duration(seconds: 2),
+                                          behavior: SnackBarBehavior.floating,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  child: const Text(
+                                    AppStrings.promoApply,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.accent,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SliverToBoxAdapter(child: SizedBox(height: 120)),
+                  ],
                 ),
-          bottomNavigationBar: _buildBottomCheckoutBar(context, cart, isEmpty),
+          bottomSheet: isEmpty ? null : _buildBottomSummaryBar(context, cart),
         );
       },
     );
@@ -173,26 +382,25 @@ class CartScreen extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border.withValues(alpha: 0.6)),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppColors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: const Color(0xFF0F172A).withValues(alpha: 0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Row(
         children: [
-          // Küçük Ürün Görseli
           Container(
-            width: 64,
-            height: 64,
+            width: 68,
+            height: 68,
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
               color: AppColors.surface,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(14),
             ),
             child: ProductImageView(
               assetPath: item.product.assetPath,
@@ -201,8 +409,6 @@ class CartScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 14),
-
-          // Ürün Başlığı, Tagline ve Fiyat
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -213,7 +419,7 @@ class CartScreen extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontSize: 14,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w800,
                     color: AppColors.textPrimary,
                   ),
                 ),
@@ -232,28 +438,27 @@ class CartScreen extends StatelessWidget {
                   item.product.price,
                   style: const TextStyle(
                     fontSize: 14,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w900,
                     color: AppColors.textPrimary,
                   ),
                 ),
               ],
             ),
           ),
-
-          // Miktar Arttır / Azalt Kontrolleri
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              IconButton(
-                icon: const Icon(
-                  Icons.remove_circle_outline,
-                  size: 22,
-                  color: AppColors.textSecondary,
+              InkWell(
+                onTap: () => cart.decreaseQuantity(item.product),
+                borderRadius: BorderRadius.circular(10),
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: AppColors.surface,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(Icons.remove, size: 16),
                 ),
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-                onPressed: () => cart.decreaseQuantity(item.product),
-                tooltip: 'Azalt',
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -262,20 +467,20 @@ class CartScreen extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
                   ),
                 ),
               ),
-              IconButton(
-                icon: const Icon(
-                  Icons.add_circle_outline,
-                  size: 22,
-                  color: AppColors.textPrimary,
+              InkWell(
+                onTap: () => cart.addToCart(item.product),
+                borderRadius: BorderRadius.circular(10),
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(Icons.add, size: 16, color: Colors.white),
                 ),
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-                onPressed: () => cart.addToCart(item.product),
-                tooltip: 'Arttır',
               ),
             ],
           ),
@@ -284,17 +489,17 @@ class CartScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBottomCheckoutBar(
-      BuildContext context, CartManager cart, bool isEmpty) {
+  Widget _buildBottomSummaryBar(BuildContext context, CartManager cart) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -4),
+            color: const Color(0xFF0F172A).withValues(alpha: 0.08),
+            blurRadius: 20,
+            offset: const Offset(0, -6),
           ),
         ],
       ),
@@ -303,66 +508,82 @@ class CartScreen extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Dolu sepette Toplam Bilgisi
-            if (!isEmpty) ...[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Ara Toplam', style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+                Text(cart.formattedSubtotal, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+              ],
+            ),
+            if (cart.discountAmount > 0) ...[
+              const SizedBox(height: 6),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    '${AppStrings.subtotal} (${cart.totalQuantity} ${AppStrings.itemsCount})',
-                    style: const TextStyle(
-                      fontSize: 13,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  Text(
-                    cart.formattedTotal,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
+                  Text('İndirim (${cart.appliedPromoCode})',
+                      style: const TextStyle(color: AppColors.success, fontSize: 13, fontWeight: FontWeight.bold)),
+                  Text('-${cart.formattedDiscount}',
+                      style: const TextStyle(color: AppColors.success, fontWeight: FontWeight.bold, fontSize: 13)),
                 ],
               ),
-              const SizedBox(height: 12),
-            ] else ...[
-              const Padding(
-                padding: EdgeInsets.only(bottom: 8),
-                child: Text(
-                  'Lorem Ipsum is simply dummy text of the printing.',
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: AppColors.textLight,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
             ],
-
-            // Checkout Butonu (Boşken pasif, doluyken aktif siyah buton)
+            const SizedBox(height: 6),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Kargo', style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+                Text(
+                  cart.shippingFee == 0 ? AppStrings.freeShipping : cart.formatCurrency(cart.shippingFee),
+                  style: TextStyle(
+                    color: cart.shippingFee == 0 ? AppColors.success : AppColors.textPrimary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+            ),
+            const Divider(height: 18),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Genel Toplam',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  cart.formattedTotal,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
             SizedBox(
               width: double.infinity,
-              height: 48,
+              height: 50,
               child: ElevatedButton(
-                onPressed:
-                    isEmpty ? null : () => _showCheckoutDialog(context, cart),
+                onPressed: () => _showCheckoutSheet(context, cart),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
-                  disabledBackgroundColor: AppColors.border,
                   foregroundColor: Colors.white,
-                  disabledForegroundColor: AppColors.textLight,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(14),
                   ),
                 ),
-                child: const Text(
-                  AppStrings.checkout,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      AppStrings.checkout,
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(width: 8),
+                    const Icon(Icons.arrow_forward_rounded, size: 18),
+                  ],
                 ),
               ),
             ),
