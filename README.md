@@ -7,6 +7,7 @@
   <img src="https://img.shields.io/badge/Packages-material.dart%20%28Zero%20Dependency%29-34d399.svg?style=flat-square" alt="Zero Dependency" />
   <img src="https://img.shields.io/badge/Architecture-Clean%20%7C%20Modular-8A2BE2.svg?style=flat-square" alt="Architecture" />
   <img src="https://img.shields.io/badge/Tests-8%20Passed%20%7C%20100%25-brightgreen.svg?style=flat-square" alt="Tests" />
+  <img src="https://img.shields.io/badge/GitHub-Repository-181717.svg?style=flat-square&logo=github&logoColor=white" alt="GitHub" />
   <img src="https://img.shields.io/badge/License-MIT-94a3b8.svg?style=flat-square" alt="License" />
 </p>
 
@@ -150,8 +151,9 @@ mini_katalog_uygulamasi/
 ### 2. Projeyi Çalıştırma Adımları
 
 ```bash
-# 1. Proje dizinine geçiş yapın
-cd /Users/Ertan/Desktop/mini_katalog_uygulamasi
+# 1. Projeyi klonlayın ve dizine geçiş yapın
+git clone https://github.com/ertandev/Mobil-Uygulama-Geli-tirme-Android-iOS.git
+cd Mobil-Uygulama-Geli-tirme-Android-iOS
 
 # 2. Bağımlılıkları güncelleyin
 flutter pub get
